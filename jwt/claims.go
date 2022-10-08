@@ -7,18 +7,16 @@ import (
 )
 
 type NglClaims struct {
-	UserId string `json:"id"`
 	IgId   string `json:"gid"`
 	jwt.RegisteredClaims
 }
 
-func GetClaims(userid *string, igid *string) *NglClaims {
+func GetClaims(igid *string) *NglClaims {
 	return &NglClaims{
-		*userid,
 		*igid,
 		jwt.RegisteredClaims{
 			ExpiresAt: jwt.NewNumericDate(
-				time.Now().Add(3 * time.Hour),
+				time.Now().Add((24 * 7) * time.Hour),
 			),
 			Issuer: "Ngl-Clone Project",
 		},
