@@ -22,10 +22,6 @@ func StartWeb() {
 		w.Write([]byte(""))
 	})
 
-	router.HandleFunc("/ws", func(w http.ResponseWriter, r *http.Request) {
-		ReceiveWS(w, r)
-	})
-
 	router.Mount("/api", api.APIRouter())
 
 	port := os.Getenv("PORT")
