@@ -64,6 +64,7 @@ func AccountCreate(w http.ResponseWriter, r *http.Request) {
 	err = json.NewEncoder(w).Encode(map[string]string{
 		"token": *token,
 		"id":    account.Id,
+		"slug": account.Slug,
 	})
 	if err != nil {
 		w.WriteHeader(http.StatusInternalServerError)
