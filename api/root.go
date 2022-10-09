@@ -15,6 +15,7 @@ func APIRouter() http.Handler {
 
 	router.Mount("/account", AccountRouter())
 	router.Mount("/validation", ValidationRouter())
+	router.Mount("/messages", MessagingRouter())
 
 	return router
 }
