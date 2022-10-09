@@ -2,6 +2,7 @@ package api
 
 import (
 	"net/http"
+	"nglapi/controllers/messaging"
 
 	"github.com/go-chi/chi/v5"
 )
@@ -9,9 +10,7 @@ import (
 func MessagingRouter() http.Handler {
 	router := chi.NewRouter()
 
-	router.Post("/", func(w http.ResponseWriter, r *http.Request) {
-		
-	})
+	router.Post("/", messaging.MessagingCreate)
 
 	return router
 }
