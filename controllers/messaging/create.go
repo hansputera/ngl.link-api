@@ -34,13 +34,13 @@ func MessagingCreate(w http.ResponseWriter, r *http.Request) {
 
 	// use `.Bytes()` because I want to reuse the `data` variable.
 	data, err = global.RedisClient.Get(global.ContextConsume, body.Destination).Bytes()
-	if err != nil || err != redis.Nil {
+	if err != nil && err != redis.Nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
 	} else if err == redis.Nil {
 		w.WriteHeader(http.StatusNotFound)
-		w.Write([]byte("not found"))
+		w.Write([]byte("user not found"))
 		return
 	}
 
