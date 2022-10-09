@@ -33,18 +33,13 @@ func AccountCreate(w http.ResponseWriter, r *http.Request) {
 	account.Slug = strings.ReplaceAll(account.InstagramUID, " ", "")
 
 	err = global.RedisClient.Get(global.ContextConsume, account.Slug).Err()
-	if err != nil {
+	if err != nil && err != redis.Nil{
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
 	} else if err != redis.Nil {
 		rid := rand.New(rand.NewSource(time.Now().UnixNano())).Intn(500)
 
-		if err != nil {
-			w.WriteHeader(http.StatusInternalServerError)
-			w.Write([]byte("Couldn't generate random id!"))
-			return
-		}
 		account.Slug = strings.Join([]string{
 			account.Slug,
 			fmt.Sprint(rid),
