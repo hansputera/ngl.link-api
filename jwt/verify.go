@@ -25,10 +25,10 @@ func ParseJWTToken(token string) *jwt.Token {
 
 func VerifyJWTToken(token string, id string) bool {
 	parsed := ParseJWTToken(token)
-	if parsed == nil || !parsed.Valid || parsed.Claims.(NglClaims).ExpiresAt.Unix() <= time.Now().Unix() {
+	if parsed == nil || !parsed.Valid || parsed.Claims.(*NglClaims).ExpiresAt.Unix() <= time.Now().Unix() {
 		return false
 	} else {
-		accountStr, err := global.RedisClient.Get(global.ContextConsume, parsed.Claims.(NglClaims).IgId).Result()
+		accountStr, err := global.RedisClient.Get(global.ContextConsume, parsed.Claims.(*NglClaims).IgId).Result()
 		if err != nil || err == redis.Nil {
 			return false
 		}

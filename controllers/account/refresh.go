@@ -33,14 +33,14 @@ func AccountRefresh(w http.ResponseWriter, r *http.Request) {
 	}
 
 	parsed := jwt.ParseJWTToken(body.Token)
-	if parsed == nil || parsed.Claims.(jwt.NglClaims).ExpiresAt.Unix() <= time.Now().Unix() {
+	if parsed == nil || parsed.Claims.(*jwt.NglClaims).ExpiresAt.Unix() <= time.Now().Unix() {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte("Invalid token"))
 		return
 	} else {
 		acc := &models.User{}
 
-		data, err = global.RedisClient.Get(global.ContextConsume, parsed.Claims.(jwt.NglClaims).IgId).Bytes()
+		data, err = global.RedisClient.Get(global.ContextConsume, parsed.Claims.(*jwt.NglClaims).IgId).Bytes()
 		if err != nil || err == redis.Nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Couldn't find your identity!"))
@@ -57,7 +57,7 @@ func AccountRefresh(w http.ResponseWriter, r *http.Request) {
 			return
 		}
 
-		token, err := jwt.GetToken(parsed.Claims.(jwt.NglClaims).IgId)
+		token, err := jwt.GetToken(parsed.Claims.(*jwt.NglClaims).IgId)
 		if err != nil {
 			w.WriteHeader(http.StatusInternalServerError)
 			w.Write([]byte(err.Error()))

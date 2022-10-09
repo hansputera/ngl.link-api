@@ -44,7 +44,7 @@ func ValidationToken(w http.ResponseWriter, r *http.Request) {
 	} else {
 		acc := &models.User{}
 
-		data, err = global.RedisClient.Get(global.ContextConsume, parsed.Claims.(jwt.NglClaims).IgId).Bytes()
+		data, err = global.RedisClient.Get(global.ContextConsume, parsed.Claims.(*jwt.NglClaims).IgId).Bytes()
 		if err != nil || err == redis.Nil {
 			w.WriteHeader(http.StatusBadRequest)
 			w.Write([]byte("Couldn't find your identity!"))
