@@ -33,7 +33,7 @@ func AccountCreate(w http.ResponseWriter, r *http.Request) {
 	account.Slug = strings.ReplaceAll(account.InstagramUID, " ", "")
 
 	err = global.RedisClient.Get(global.ContextConsume, account.Slug).Err()
-	if err != nil && err == redis.Nil {
+	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		w.Write([]byte(err.Error()))
 		return
