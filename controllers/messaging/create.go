@@ -52,12 +52,25 @@ func MessagingCreate(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// push to notif server
-	go global.RedisClient.Publish(global.ContextConsume, "new_message", map[string]string{
+	data, err = json.Marshal(map[string]string{
 		"id":       acc.Id,
 		"msg":      body.Message,
-		"time_now": time.Now().UTC().String(),
+		"time_now": fmt.Sprint(time.Now().UnixMilli()),
 	})
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
+	// push to notif server
+	err = global.RedisClient.Publish(global.ContextConsume, "new_message", data).Err()
+
+	if err != nil {
+		w.WriteHeader(http.StatusInternalServerError)
+		w.Write([]byte(err.Error()))
+		return
+	}
 
 	w.WriteHeader(http.StatusOK)
 	w.Write([]byte(fmt.Sprintf("Sent to %s", acc.Slug)))
