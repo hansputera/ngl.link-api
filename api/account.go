@@ -12,6 +12,7 @@ func AccountRouter() http.Handler {
 
 	router.Post("/", account.AccountCreate)
 	router.Patch("/refresh", account.AccountRefresh)
+	router.Delete("/delete", account.AccountDelete)
 
 	return router
 }
