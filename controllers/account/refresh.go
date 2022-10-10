@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/go-redis/redis/v9"
+	"github.com/rs/xid"
 )
 
 type refreshBody struct {
@@ -56,6 +57,15 @@ func AccountRefresh(w http.ResponseWriter, r *http.Request) {
 			w.Write([]byte("You aren't able to refresh this user token!"))
 			return
 		}
+
+		acc.Id = xid.New().String()
+
+		if data, err = json.Marshal(data); err != nil {
+			w.WriteHeader(http.StatusInternalServerError)
+			w.Write([]byte(err.Error()))
+			return
+		}
+		go global.RedisClient.SetEx(global.ContextConsume, parsed.Claims.(*jwt.NglClaims).IgId, data, 24*time.Hour)
 
 		token, err := jwt.GetToken(parsed.Claims.(*jwt.NglClaims).IgId)
 		if err != nil {
